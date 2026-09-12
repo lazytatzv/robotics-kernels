@@ -47,7 +47,8 @@ jobs:
               apt-get update && \
               apt-get install -y build-essential bc kmod cpio flex bison \
                 libncurses-dev libelf-dev libssl-dev dwarves rsync \
-                debhelper libdw-dev zstd wget xz-utils patch git ccache && \
+                debhelper libdw-dev zstd wget xz-utils patch git ccache \
+                python3 pkg-config gawk && \
               bash ./build.sh ${{ matrix.target }} && \
               echo '=== ccache statistics ===' && \
               ccache -s

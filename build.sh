@@ -427,27 +427,6 @@ cp ../${TARGET}/.config .config
 ./scripts/config --disable CONFIG_VIDEO_SAA7146
 ./scripts/config --disable CONFIG_VIDEO_ZORAN
 
-# Extreme Real-Time Tuning for Robotics Competition (Deterministic Execution)
-# 1. PCIe & Power Management: Highest Performance / No latency spikes
-./scripts/config --enable CONFIG_PCIEASPM_PERFORMANCE
-./scripts/config --disable CONFIG_PCIEASPM_POWERSAVE
-./scripts/config --disable CONFIG_PCIEASPM_POWER_SUPERSAVE
-
-# 2. Disable SWAP (Prevent deadly disk I/O stall & memory freeze during matches)
-./scripts/config --disable CONFIG_SWAP
-
-# 3. Threaded IRQs (Allow prioritizing control tasks over network/USB interrupts)
-./scripts/config --enable CONFIG_IRQ_FORCED_THREADING
-
-# 4. Remove watchdog & detector timer interrupts (Eliminate background NMI jitter)
-./scripts/config --disable CONFIG_LOCKUP_DETECTOR
-./scripts/config --disable CONFIG_HARDLOCKUP_DETECTOR
-./scripts/config --disable CONFIG_DETECT_HUNG_TASK
-
-# 5. Disable CPU Vulnerability Mitigations for Ultra-Fast Syscalls & Context Switches
-./scripts/config --disable CONFIG_PAGE_TABLE_ISOLATION
-./scripts/config --disable CONFIG_RETPOLINE
-
 # 16. Archaic Network Protocols (Obscure ancient network layers)
 ./scripts/config --disable CONFIG_ATALK
 ./scripts/config --disable CONFIG_X25
@@ -517,10 +496,12 @@ cp ../${TARGET}/.config .config
 # Resolve configuration differences automatically
 make olddefconfig > /dev/null
 
-# 5. Build Debian packages with modern x86-64-v3 (AVX2/FMA) optimization & ccache acceleration
-# Enable ccache if available
+# 5. Build Debian packages with ccache acceleration & parallel compression
+# Enable ccache in PATH
 if command -v ccache >/dev/null 2>&1; then
     export PATH="/usr/lib/ccache:$PATH"
+    export CC="ccache gcc"
+    export HOSTCC="ccache gcc"
     echo "ccache enabled for ultra-fast compilation."
 fi
 
@@ -529,15 +510,12 @@ export ZSTD_NBTHREADS=0
 export XZ_OPT="-T0"
 export DEB_BUILD_OPTIONS="nodocs"
 export DEB_BUILD_PROFILES="nodocs"
+export INSTALL_MOD_STRIP=1
 
 JOBS=$(( $(nproc) + 2 ))
 echo "Compiling with $JOBS parallel jobs..."
 
-KCFLAGS="-O3 -march=x86-64-v3 -mtune=generic" \
-KCPPFLAGS="-O3 -march=x86-64-v3 -mtune=generic" \
-HOSTCFLAGS="${HOSTCFLAGS}" \
-HOSTLDFLAGS="${HOSTLDFLAGS}" \
-make -j${JOBS} CC="ccache gcc" HOSTCC="ccache gcc" INSTALL_MOD_STRIP=1 bindeb-pkg DPKG_FLAGS="-d"
+make -j${JOBS} bindeb-pkg DPKG_FLAGS="-d"
 
 # Ensure deb packages and cache are accessible
 chmod -f a+rw ../*.deb || true
