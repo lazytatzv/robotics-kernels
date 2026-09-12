@@ -13,7 +13,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        target: [x86-64-ubuntu2604]
+        target: [x86_64-ubuntu2604]
 
     steps:
       - name: Checkout repository
