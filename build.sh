@@ -10,7 +10,7 @@ fi
 # Kernel version variables
 KERNEL_MAJOR="7.x"
 KERNEL_VERSION="7.0.1"
-RT_PATCH="patch-7.0.1-rt.patch.xz"
+RT_PATCH="patch-7.0.1-rt2.patch.xz"
 
 echo "Building target: $TARGET"
 echo "Kernel: $KERNEL_VERSION / RT Patch: $RT_PATCH"
