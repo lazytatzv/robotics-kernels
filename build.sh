@@ -18,6 +18,37 @@ export KBUILD_BUILD_USER="robotics"
 export KBUILD_BUILD_HOST="robotics-builder"
 export KDEB_CHANGELOG_DIST="noble"
 
+# Auto-detect header/library paths for NixOS and non-FHS distributions
+for p in /nix/store/*-elfutils-*/include /usr/include /usr/local/include; do
+    if [ -f "$p/gelf.h" ]; then
+        lib_dir="${p%/include}/lib"
+        export C_INCLUDE_PATH="${C_INCLUDE_PATH:+$C_INCLUDE_PATH:}$p"
+        export CPATH="${CPATH:+$CPATH:}$p"
+        export HOSTCFLAGS="${HOSTCFLAGS:+$HOSTCFLAGS }-I$p"
+        export HOST_EXTRACFLAGS="${HOST_EXTRACFLAGS:+$HOST_EXTRACFLAGS }-I$p"
+        if [ -d "$lib_dir" ]; then
+            export LIBRARY_PATH="${LIBRARY_PATH:+$LIBRARY_PATH:}$lib_dir"
+            export HOSTLDFLAGS="${HOSTLDFLAGS:+$HOSTLDFLAGS }-L$lib_dir"
+        fi
+        break
+    fi
+done
+
+for p in /nix/store/*-openssl-*/include; do
+    if [ -d "$p" ]; then
+        lib_dir="${p%/include}/lib"
+        export C_INCLUDE_PATH="${C_INCLUDE_PATH:+$C_INCLUDE_PATH:}$p"
+        export CPATH="${CPATH:+$CPATH:}$p"
+        export HOSTCFLAGS="${HOSTCFLAGS:+$HOSTCFLAGS }-I$p"
+        export HOST_EXTRACFLAGS="${HOST_EXTRACFLAGS:+$HOST_EXTRACFLAGS }-I$p"
+        if [ -d "$lib_dir" ]; then
+            export LIBRARY_PATH="${LIBRARY_PATH:+$LIBRARY_PATH:}$lib_dir"
+            export HOSTLDFLAGS="${HOSTLDFLAGS:+$HOSTLDFLAGS }-L$lib_dir"
+        fi
+        break
+    fi
+done
+
 echo "Building target: $TARGET"
 echo "Kernel: $KERNEL_VERSION / RT Patch: $RT_PATCH"
 
