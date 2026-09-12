@@ -29,13 +29,20 @@ jobs:
 
       - name: Build Kernel inside Ubuntu 24.04 Docker Container
         run: |
-          mkdir -p "$HOME/.cache/ccache"
+          # Use system ccache dir or user ccache dir
+          HOST_CCACHE="/var/cache/ccache"
+          if [ ! -d "$HOST_CCACHE" ] || [ ! -w "$HOST_CCACHE" ]; then
+            HOST_CCACHE="$HOME/.cache/ccache"
+          fi
+          mkdir -p "$HOST_CCACHE"
+          echo "Using host ccache directory: $HOST_CCACHE"
+
           docker run --rm \
             -v "$PWD:/workspace" \
-            -v "$HOME/.cache/ccache:/root/.cache/ccache" \
+            -v "$HOST_CCACHE:/root/.cache/ccache" \
             -w /workspace \
             -e CCACHE_DIR=/root/.cache/ccache \
-            -e CCACHE_MAXSIZE=20G \
+            -e CCACHE_MAXSIZE=50G \
             ubuntu:24.04 bash -c "
               apt-get update && \
               apt-get install -y build-essential bc kmod cpio flex bison \
