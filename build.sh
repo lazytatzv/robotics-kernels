@@ -492,10 +492,11 @@ KCFLAGS="-O3 -march=x86-64-v3 -mtune=generic" \
 KCPPFLAGS="-O3 -march=x86-64-v3 -mtune=generic" \
 HOSTCFLAGS="${HOSTCFLAGS}" \
 HOSTLDFLAGS="${HOSTLDFLAGS}" \
-make -j${JOBS} bindeb-pkg DPKG_FLAGS="-d"
+make -j${JOBS} CC="ccache gcc" HOSTCC="ccache gcc" bindeb-pkg DPKG_FLAGS="-d"
 
-# Ensure deb packages are readable by host runner and verify existence
+# Ensure deb packages and cache are accessible
 chmod -f a+rw ../*.deb || true
+chmod -Rf a+rwX /root/.cache/ccache 2>/dev/null || true
 ls -lh ../*.deb
 
 echo "Build completed successfully."

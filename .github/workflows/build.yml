@@ -41,7 +41,9 @@ jobs:
               apt-get install -y build-essential bc kmod cpio flex bison \
                 libncurses-dev libelf-dev libssl-dev dwarves rsync \
                 debhelper libdw-dev zstd wget xz-utils patch git ccache && \
-              bash ./build.sh ${{ matrix.target }}
+              bash ./build.sh ${{ matrix.target }} && \
+              echo '=== ccache statistics ===' && \
+              ccache -s
             "
 
       - name: Upload artifacts
