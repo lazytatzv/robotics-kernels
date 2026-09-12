@@ -17,6 +17,7 @@ RT_PATCH="patch-7.0.1-rt2.patch.xz"
 export KBUILD_BUILD_USER="robotics"
 export KBUILD_BUILD_HOST="robotics-builder"
 export KDEB_CHANGELOG_DIST="noble"
+export PATH="$PATH:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/bin:/bin"
 
 # Auto-detect header/library paths for NixOS and non-FHS distributions
 for p in /nix/store/*-elfutils-*/include /nix/store/*elfutils*/include /usr/include /usr/local/include; do
