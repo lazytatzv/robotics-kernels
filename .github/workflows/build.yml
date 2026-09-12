@@ -23,7 +23,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential bc kmod cpio flex bison \
-            libncurses-dev libelf-dev libssl-dev dwarves rsync
+            libncurses-dev libelf-dev libssl-dev dwarves rsync \
+            debhelper libdw-dev zstd
 
       - name: Run build script
         run: ./build.sh ${{ matrix.target }}
