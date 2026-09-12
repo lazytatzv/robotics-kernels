@@ -46,22 +46,28 @@ done
 # Libraries (libelf / libssl / libcrypto)
 for p in /nix/store/*-elfutils-*/lib /nix/store/*elfutils*/lib /usr/lib /usr/lib64 /usr/local/lib; do
     if [ -f "$p/libelf.so" ] || [ -f "$p/libelf.a" ]; then
-        export NIX_LDFLAGS="${NIX_LDFLAGS:+$NIX_LDFLAGS }-L$p"
+        export NIX_LDFLAGS="${NIX_LDFLAGS:+$NIX_LDFLAGS }-L$p -rpath $p"
         export LIBRARY_PATH="${LIBRARY_PATH:+$LIBRARY_PATH:}$p"
         export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}$p"
         export HOSTLDFLAGS="${HOSTLDFLAGS:+$HOSTLDFLAGS }-L$p"
         export HOST_EXTRALDFLAGS="${HOST_EXTRALDFLAGS:+$HOST_EXTRALDFLAGS }-L$p"
+        if [ -d "$p/pkgconfig" ]; then
+            export PKG_CONFIG_PATH="${PKG_CONFIG_PATH:+$PKG_CONFIG_PATH:}$p/pkgconfig"
+        fi
         break
     fi
 done
 
 for p in /nix/store/*-openssl-*/lib /nix/store/*openssl*/lib; do
     if [ -f "$p/libssl.so" ] || [ -f "$p/libcrypto.so" ]; then
-        export NIX_LDFLAGS="${NIX_LDFLAGS:+$NIX_LDFLAGS }-L$p"
+        export NIX_LDFLAGS="${NIX_LDFLAGS:+$NIX_LDFLAGS }-L$p -rpath $p"
         export LIBRARY_PATH="${LIBRARY_PATH:+$LIBRARY_PATH:}$p"
         export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}$p"
         export HOSTLDFLAGS="${HOSTLDFLAGS:+$HOSTLDFLAGS }-L$p"
         export HOST_EXTRALDFLAGS="${HOST_EXTRALDFLAGS:+$HOST_EXTRALDFLAGS }-L$p"
+        if [ -d "$p/pkgconfig" ]; then
+            export PKG_CONFIG_PATH="${PKG_CONFIG_PATH:+$PKG_CONFIG_PATH:}$p/pkgconfig"
+        fi
         break
     fi
 done
