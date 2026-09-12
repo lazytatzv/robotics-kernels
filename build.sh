@@ -19,14 +19,16 @@ export KBUILD_BUILD_HOST="robotics-builder"
 export KDEB_CHANGELOG_DIST="noble"
 
 # Auto-detect header/library paths for NixOS and non-FHS distributions
-for p in /nix/store/*-elfutils-*/include /usr/include /usr/local/include; do
+for p in /nix/store/*-elfutils-*/include /nix/store/*elfutils*/include /usr/include /usr/local/include; do
     if [ -f "$p/gelf.h" ]; then
         lib_dir="${p%/include}/lib"
+        export NIX_CFLAGS_COMPILE="${NIX_CFLAGS_COMPILE:+$NIX_CFLAGS_COMPILE }-I$p"
         export C_INCLUDE_PATH="${C_INCLUDE_PATH:+$C_INCLUDE_PATH:}$p"
         export CPATH="${CPATH:+$CPATH:}$p"
         export HOSTCFLAGS="${HOSTCFLAGS:+$HOSTCFLAGS }-I$p"
         export HOST_EXTRACFLAGS="${HOST_EXTRACFLAGS:+$HOST_EXTRACFLAGS }-I$p"
         if [ -d "$lib_dir" ]; then
+            export NIX_LDFLAGS="${NIX_LDFLAGS:+$NIX_LDFLAGS }-L$lib_dir"
             export LIBRARY_PATH="${LIBRARY_PATH:+$LIBRARY_PATH:}$lib_dir"
             export HOSTLDFLAGS="${HOSTLDFLAGS:+$HOSTLDFLAGS }-L$lib_dir"
         fi
@@ -34,14 +36,16 @@ for p in /nix/store/*-elfutils-*/include /usr/include /usr/local/include; do
     fi
 done
 
-for p in /nix/store/*-openssl-*/include; do
+for p in /nix/store/*-openssl-*/include /nix/store/*openssl*/include; do
     if [ -d "$p" ]; then
         lib_dir="${p%/include}/lib"
+        export NIX_CFLAGS_COMPILE="${NIX_CFLAGS_COMPILE:+$NIX_CFLAGS_COMPILE }-I$p"
         export C_INCLUDE_PATH="${C_INCLUDE_PATH:+$C_INCLUDE_PATH:}$p"
         export CPATH="${CPATH:+$CPATH:}$p"
         export HOSTCFLAGS="${HOSTCFLAGS:+$HOSTCFLAGS }-I$p"
         export HOST_EXTRACFLAGS="${HOST_EXTRACFLAGS:+$HOST_EXTRACFLAGS }-I$p"
         if [ -d "$lib_dir" ]; then
+            export NIX_LDFLAGS="${NIX_LDFLAGS:+$NIX_LDFLAGS }-L$lib_dir"
             export LIBRARY_PATH="${LIBRARY_PATH:+$LIBRARY_PATH:}$lib_dir"
             export HOSTLDFLAGS="${HOSTLDFLAGS:+$HOSTLDFLAGS }-L$lib_dir"
         fi
