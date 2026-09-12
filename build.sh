@@ -13,6 +13,11 @@ KERNEL_VERSION="7.0.1"
 RT_MAJOR="7.0"
 RT_PATCH="patch-7.0.1-rt2.patch.xz"
 
+# Build environment variables (ensures mkdebian works without hostname command)
+export KBUILD_BUILD_USER="robotics"
+export KBUILD_BUILD_HOST="robotics-builder"
+export KDEB_CHANGELOG_DIST="noble"
+
 echo "Building target: $TARGET"
 echo "Kernel: $KERNEL_VERSION / RT Patch: $RT_PATCH"
 
@@ -93,7 +98,7 @@ cp ../${TARGET}/.config .config
 ./scripts/config --module CONFIG_OVERLAY_FS
 ./scripts/config --module CONFIG_BRIDGE
 ./scripts/config --module CONFIG_VETH
-./scripts/config --module CONFIG_NETFILTER
+./scripts/config --enable CONFIG_NETFILTER
 ./scripts/config --module CONFIG_IP_NF_IPTABLES
 
 # Disable completely unused subsystems & legacy hardware (Keep USB, CAN, Ether, WiFi, BT, V4L2)
@@ -176,6 +181,7 @@ cp ../${TARGET}/.config .config
 make olddefconfig > /dev/null
 
 # 5. Build Debian packages with modern x86-64-v3 (AVX2/FMA) optimization
-KCFLAGS="-O3 -march=x86-64-v3 -mtune=generic" KCPPFLAGS="-O3 -march=x86-64-v3 -mtune=generic" make -j$(nproc) bindeb-pkg
+# DPKG_FLAGS="-d" ensures compatibility across all Linux distributions (Ubuntu, Debian, NixOS, Arch, etc.)
+KCFLAGS="-O3 -march=x86-64-v3 -mtune=generic" KCPPFLAGS="-O3 -march=x86-64-v3 -mtune=generic" make -j$(nproc) bindeb-pkg DPKG_FLAGS="-d"
 
 echo "Build completed."
