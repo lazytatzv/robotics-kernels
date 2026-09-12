@@ -21,14 +21,29 @@ export KDEB_CHANGELOG_DIST="noble"
 echo "Building target: $TARGET"
 echo "Kernel: $KERNEL_VERSION / RT Patch: $RT_PATCH"
 
-# 1. Download source and patch
-wget -q https://cdn.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}/linux-${KERNEL_VERSION}.tar.xz
-wget -q https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/${RT_MAJOR}/${RT_PATCH}
+# 1. Download source and patch (skip if already cached)
+KERNEL_TAR="linux-${KERNEL_VERSION}.tar.xz"
+if [ ! -f "$KERNEL_TAR" ]; then
+    echo "Downloading kernel source ($KERNEL_TAR)..."
+    wget -c -q --show-progress "https://cdn.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}/${KERNEL_TAR}"
+else
+    echo "Using cached kernel source ($KERNEL_TAR)"
+fi
 
-# 2. Extract and apply patch
-tar -xf linux-${KERNEL_VERSION}.tar.xz
-cd linux-${KERNEL_VERSION}
-xzcat ../${RT_PATCH} | patch -p1 > /dev/null
+if [ ! -f "$RT_PATCH" ]; then
+    echo "Downloading RT patch ($RT_PATCH)..."
+    wget -c -q --show-progress "https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/${RT_MAJOR}/${RT_PATCH}"
+else
+    echo "Using cached RT patch ($RT_PATCH)"
+fi
+
+# 2. Extract and apply patch (multi-threaded decompression with xz -T0)
+rm -rf "linux-${KERNEL_VERSION}"
+echo "Extracting kernel source with all CPU cores..."
+tar -I "xz -T0" -xf "$KERNEL_TAR"
+cd "linux-${KERNEL_VERSION}"
+echo "Applying PREEMPT_RT patch..."
+xzcat "../${RT_PATCH}" | patch -p1 > /dev/null
 
 # 3. Copy base config
 cp ../${TARGET}/.config .config

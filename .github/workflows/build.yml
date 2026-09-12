@@ -30,6 +30,14 @@ jobs:
             echo "Non-Debian / NixOS environment detected, skipping apt-get."
           fi
 
+      - name: Cache kernel source and patches
+        uses: actions/cache@v4
+        with:
+          path: |
+            ./*.tar.xz
+            ./*.patch.xz
+          key: kernel-source-${{ matrix.target }}-7.0.1
+
       - name: Run build script
         run: bash ./build.sh ${{ matrix.target }}
 
