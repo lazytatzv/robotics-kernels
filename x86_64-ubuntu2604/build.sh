@@ -10,14 +10,15 @@ fi
 # Kernel version variables
 KERNEL_MAJOR="7.x"
 KERNEL_VERSION="7.0.1"
-RT_PATCH="patch-7.0.1-rt.patch.xz"
+RT_MAJOR="7.0"
+RT_PATCH="patch-7.0.1-rt2.patch.xz"
 
 echo "Building target: $TARGET"
 echo "Kernel: $KERNEL_VERSION / RT Patch: $RT_PATCH"
 
 # 1. Download source and patch
 wget -q https://cdn.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}/linux-${KERNEL_VERSION}.tar.xz
-wget -q https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/6.12/${RT_PATCH}
+wget -q https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/${RT_MAJOR}/${RT_PATCH}
 
 # 2. Extract and apply patch
 tar -xf linux-${KERNEL_VERSION}.tar.xz
