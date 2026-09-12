@@ -20,36 +20,48 @@ export KDEB_CHANGELOG_DIST="noble"
 export PATH="$PATH:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/bin:/bin"
 
 # Auto-detect header/library paths for NixOS and non-FHS distributions
+# Headers (elfutils / openssl)
 for p in /nix/store/*-elfutils-*/include /nix/store/*elfutils*/include /usr/include /usr/local/include; do
     if [ -f "$p/gelf.h" ]; then
-        lib_dir="${p%/include}/lib"
         export NIX_CFLAGS_COMPILE="${NIX_CFLAGS_COMPILE:+$NIX_CFLAGS_COMPILE }-I$p"
         export C_INCLUDE_PATH="${C_INCLUDE_PATH:+$C_INCLUDE_PATH:}$p"
         export CPATH="${CPATH:+$CPATH:}$p"
         export HOSTCFLAGS="${HOSTCFLAGS:+$HOSTCFLAGS }-I$p"
         export HOST_EXTRACFLAGS="${HOST_EXTRACFLAGS:+$HOST_EXTRACFLAGS }-I$p"
-        if [ -d "$lib_dir" ]; then
-            export NIX_LDFLAGS="${NIX_LDFLAGS:+$NIX_LDFLAGS }-L$lib_dir"
-            export LIBRARY_PATH="${LIBRARY_PATH:+$LIBRARY_PATH:}$lib_dir"
-            export HOSTLDFLAGS="${HOSTLDFLAGS:+$HOSTLDFLAGS }-L$lib_dir"
-        fi
         break
     fi
 done
 
 for p in /nix/store/*-openssl-*/include /nix/store/*openssl*/include; do
     if [ -d "$p" ]; then
-        lib_dir="${p%/include}/lib"
         export NIX_CFLAGS_COMPILE="${NIX_CFLAGS_COMPILE:+$NIX_CFLAGS_COMPILE }-I$p"
         export C_INCLUDE_PATH="${C_INCLUDE_PATH:+$C_INCLUDE_PATH:}$p"
         export CPATH="${CPATH:+$CPATH:}$p"
         export HOSTCFLAGS="${HOSTCFLAGS:+$HOSTCFLAGS }-I$p"
         export HOST_EXTRACFLAGS="${HOST_EXTRACFLAGS:+$HOST_EXTRACFLAGS }-I$p"
-        if [ -d "$lib_dir" ]; then
-            export NIX_LDFLAGS="${NIX_LDFLAGS:+$NIX_LDFLAGS }-L$lib_dir"
-            export LIBRARY_PATH="${LIBRARY_PATH:+$LIBRARY_PATH:}$lib_dir"
-            export HOSTLDFLAGS="${HOSTLDFLAGS:+$HOSTLDFLAGS }-L$lib_dir"
-        fi
+        break
+    fi
+done
+
+# Libraries (libelf / libssl / libcrypto)
+for p in /nix/store/*-elfutils-*/lib /nix/store/*elfutils*/lib /usr/lib /usr/lib64 /usr/local/lib; do
+    if [ -f "$p/libelf.so" ] || [ -f "$p/libelf.a" ]; then
+        export NIX_LDFLAGS="${NIX_LDFLAGS:+$NIX_LDFLAGS }-L$p"
+        export LIBRARY_PATH="${LIBRARY_PATH:+$LIBRARY_PATH:}$p"
+        export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}$p"
+        export HOSTLDFLAGS="${HOSTLDFLAGS:+$HOSTLDFLAGS }-L$p"
+        export HOST_EXTRALDFLAGS="${HOST_EXTRALDFLAGS:+$HOST_EXTRALDFLAGS }-L$p"
+        break
+    fi
+done
+
+for p in /nix/store/*-openssl-*/lib /nix/store/*openssl*/lib; do
+    if [ -f "$p/libssl.so" ] || [ -f "$p/libcrypto.so" ]; then
+        export NIX_LDFLAGS="${NIX_LDFLAGS:+$NIX_LDFLAGS }-L$p"
+        export LIBRARY_PATH="${LIBRARY_PATH:+$LIBRARY_PATH:}$p"
+        export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}$p"
+        export HOSTLDFLAGS="${HOSTLDFLAGS:+$HOSTLDFLAGS }-L$p"
+        export HOST_EXTRALDFLAGS="${HOST_EXTRALDFLAGS:+$HOST_EXTRALDFLAGS }-L$p"
         break
     fi
 done
@@ -233,6 +245,10 @@ make olddefconfig > /dev/null
 
 # 5. Build Debian packages with modern x86-64-v3 (AVX2/FMA) optimization
 # DPKG_FLAGS="-d" ensures compatibility across all Linux distributions (Ubuntu, Debian, NixOS, Arch, etc.)
-KCFLAGS="-O3 -march=x86-64-v3 -mtune=generic" KCPPFLAGS="-O3 -march=x86-64-v3 -mtune=generic" make -j$(nproc) bindeb-pkg DPKG_FLAGS="-d"
+KCFLAGS="-O3 -march=x86-64-v3 -mtune=generic" \
+KCPPFLAGS="-O3 -march=x86-64-v3 -mtune=generic" \
+HOSTCFLAGS="${HOSTCFLAGS}" \
+HOSTLDFLAGS="${HOSTLDFLAGS}" \
+make -j$(nproc) bindeb-pkg DPKG_FLAGS="-d"
 
 echo "Build completed."
