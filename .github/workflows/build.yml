@@ -29,14 +29,18 @@ jobs:
 
       - name: Build Kernel inside Ubuntu 24.04 Docker Container
         run: |
+          mkdir -p "$HOME/.cache/ccache"
           docker run --rm \
             -v "$PWD:/workspace" \
+            -v "$HOME/.cache/ccache:/root/.cache/ccache" \
             -w /workspace \
+            -e CCACHE_DIR=/root/.cache/ccache \
+            -e CCACHE_MAXSIZE=20G \
             ubuntu:24.04 bash -c "
               apt-get update && \
               apt-get install -y build-essential bc kmod cpio flex bison \
                 libncurses-dev libelf-dev libssl-dev dwarves rsync \
-                debhelper libdw-dev zstd wget xz-utils patch git && \
+                debhelper libdw-dev zstd wget xz-utils patch git ccache && \
               bash ./build.sh ${{ matrix.target }}
             "
 

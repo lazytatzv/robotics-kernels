@@ -291,6 +291,142 @@ cp ../${TARGET}/.config .config
 ./scripts/config --disable CONFIG_SAMSUNG_LAPTOP
 ./scripts/config --disable CONFIG_ACER_WIRELESS
 
+# 9. Server EDAC, Accessibility & Industrial IO Framework (Massive module bloat)
+./scripts/config --disable CONFIG_EDAC
+./scripts/config --disable CONFIG_ACCESSIBILITY
+./scripts/config --disable CONFIG_SPEAKUP
+./scripts/config --disable CONFIG_IIO
+
+# 10. Archaic Wi-Fi & Obscure Bluetooth (Keep modern Intel/Realtek/MediaTek/Atheros Wi-Fi & USB BT)
+./scripts/config --disable CONFIG_B43
+./scripts/config --disable CONFIG_B43LEGACY
+./scripts/config --disable CONFIG_AIRO
+./scripts/config --disable CONFIG_ATMEL
+./scripts/config --disable CONFIG_RT2400PCI
+./scripts/config --disable CONFIG_RT2500PCI
+./scripts/config --disable CONFIG_MWIFIEX
+./scripts/config --disable CONFIG_WL12XX
+./scripts/config --disable CONFIG_WL18XX
+./scripts/config --disable CONFIG_BT_MRVL
+./scripts/config --disable CONFIG_BT_MTK
+./scripts/config --disable CONFIG_BT_HCIBTSDIO
+
+# 11. Archaic PCI Sound Cards (Keep Intel HDA, Realtek, HDMI & USB Audio)
+./scripts/config --disable CONFIG_SND_EMU10K1
+./scripts/config --disable CONFIG_SND_YMFPCI
+./scripts/config --disable CONFIG_SND_TRIDENT
+./scripts/config --disable CONFIG_SND_VIA82XX
+./scripts/config --disable CONFIG_SND_CMIPCI
+./scripts/config --disable CONFIG_SND_CS46XX
+./scripts/config --disable CONFIG_SND_ENS1370
+./scripts/config --disable CONFIG_SND_ENS1371
+./scripts/config --disable CONFIG_SND_ES1938
+./scripts/config --disable CONFIG_SND_ES1968
+./scripts/config --disable CONFIG_SND_FM801
+./scripts/config --disable CONFIG_SND_ICE1712
+./scripts/config --disable CONFIG_SND_ICE1724
+./scripts/config --disable CONFIG_SND_KORG1212
+./scripts/config --disable CONFIG_SND_MIXART
+./scripts/config --disable CONFIG_SND_NM256
+./scripts/config --disable CONFIG_SND_RME32
+./scripts/config --disable CONFIG_SND_RME96
+./scripts/config --disable CONFIG_SND_RME9652
+./scripts/config --disable CONFIG_SND_SONICVIBES
+./scripts/config --disable CONFIG_SND_VX222
+
+# 12. Obscure USB Serials (Keep FTDI, CP210x, CH341, PL2303, CDC-ACM Arduino/STM32/Pico)
+./scripts/config --disable CONFIG_USB_SERIAL_GARMIN
+./scripts/config --disable CONFIG_USB_SERIAL_NAVMAN
+./scripts/config --disable CONFIG_USB_SERIAL_OMNINET
+./scripts/config --disable CONFIG_USB_SERIAL_OPTICON
+./scripts/config --disable CONFIG_USB_SERIAL_WHITEHEAT
+./scripts/config --disable CONFIG_USB_SERIAL_DIGI_ACCELEPORT
+./scripts/config --disable CONFIG_USB_SERIAL_CYPRESS_M8
+./scripts/config --disable CONFIG_USB_SERIAL_EMPEG
+./scripts/config --disable CONFIG_USB_SERIAL_IR
+./scripts/config --disable CONFIG_USB_SERIAL_IPAQ
+./scripts/config --disable CONFIG_USB_SERIAL_KEYSPAN
+./scripts/config --disable CONFIG_USB_SERIAL_KLSI
+./scripts/config --disable CONFIG_USB_SERIAL_KOBIL_SCT
+./scripts/config --disable CONFIG_USB_SERIAL_MCT_U232
+./scripts/config --disable CONFIG_USB_SERIAL_MOS7720
+./scripts/config --disable CONFIG_USB_SERIAL_MOS7840
+./scripts/config --disable CONFIG_USB_SERIAL_SAFE
+./scripts/config --disable CONFIG_USB_SERIAL_SIERRAWIRELESS
+./scripts/config --disable CONFIG_USB_SERIAL_SYMBOL
+./scripts/config --disable CONFIG_USB_SERIAL_TI
+./scripts/config --disable CONFIG_USB_SERIAL_VISOR
+./scripts/config --disable CONFIG_USB_SERIAL_XIRCOM
+
+# 13. Vendor-specific Obscure HID Drivers (Generic HID and Gamepads are kept)
+./scripts/config --disable CONFIG_HID_A4TECH
+./scripts/config --disable CONFIG_HID_ACRUX
+./scripts/config --disable CONFIG_HID_APPLE
+./scripts/config --disable CONFIG_HID_BELKIN
+./scripts/config --disable CONFIG_HID_CHERRY
+./scripts/config --disable CONFIG_HID_CHICONY
+./scripts/config --disable CONFIG_HID_CYPRESS
+./scripts/config --disable CONFIG_HID_DRAGONRISE
+./scripts/config --disable CONFIG_HID_EMS_FF
+./scripts/config --disable CONFIG_HID_ELECOM
+./scripts/config --disable CONFIG_HID_EZKEY
+./scripts/config --disable CONFIG_HID_HOLTEK
+./scripts/config --disable CONFIG_HID_KEYTOUCH
+./scripts/config --disable CONFIG_HID_KYE
+./scripts/config --disable CONFIG_HID_UCLOGIC
+./scripts/config --disable CONFIG_HID_WALTOP
+./scripts/config --disable CONFIG_HID_GYRATION
+./scripts/config --disable CONFIG_HID_TWINHAN
+./scripts/config --disable CONFIG_HID_KENSINGTON
+./scripts/config --disable CONFIG_HID_LCPOWER
+./scripts/config --disable CONFIG_HID_LENOVO
+./scripts/config --disable CONFIG_HID_MONTEREY
+./scripts/config --disable CONFIG_HID_NTRIG
+./scripts/config --disable CONFIG_HID_ORTEK
+./scripts/config --disable CONFIG_HID_PANTHERLORD
+./scripts/config --disable CONFIG_HID_PETALYNX
+./scripts/config --disable CONFIG_HID_PICOLCD
+./scripts/config --disable CONFIG_HID_PRIMAX
+./scripts/config --disable CONFIG_HID_SAITEK
+./scripts/config --disable CONFIG_HID_SAMSUNG
+./scripts/config --disable CONFIG_HID_SPEEDLINK
+./scripts/config --disable CONFIG_HID_STEELSERIES
+./scripts/config --disable CONFIG_HID_SUNPLUS
+./scripts/config --disable CONFIG_HID_GREENASIA
+./scripts/config --disable CONFIG_HID_SMARTJOYPLUS
+./scripts/config --disable CONFIG_HID_TIVO
+./scripts/config --disable CONFIG_HID_TOPSEED
+./scripts/config --disable CONFIG_HID_THRUSTMASTER
+./scripts/config --disable CONFIG_HID_WACOM
+./scripts/config --disable CONFIG_HID_WIIMOTE
+./scripts/config --disable CONFIG_HID_ZEROPLUS
+./scripts/config --disable CONFIG_HID_ZYDACRON
+
+# 14. Ancient & Insecure Crypto Algorithms (Keep AES, SHA256/512, ChaCha20, Curve25519)
+./scripts/config --disable CONFIG_CRYPTO_TWOFISH
+./scripts/config --disable CONFIG_CRYPTO_SERPENT
+./scripts/config --disable CONFIG_CRYPTO_CAST5
+./scripts/config --disable CONFIG_CRYPTO_CAST6
+./scripts/config --disable CONFIG_CRYPTO_BLOWFISH
+./scripts/config --disable CONFIG_CRYPTO_CAMELLIA
+./scripts/config --disable CONFIG_CRYPTO_ANUBIS
+./scripts/config --disable CONFIG_CRYPTO_KHAZAD
+./scripts/config --disable CONFIG_CRYPTO_SEED
+./scripts/config --disable CONFIG_CRYPTO_TEA
+./scripts/config --disable CONFIG_CRYPTO_ARC4
+./scripts/config --disable CONFIG_CRYPTO_DES
+./scripts/config --disable CONFIG_CRYPTO_MD4
+
+# 15. Archaic Analog Video Capture (Keep USB UVC webcams)
+./scripts/config --disable CONFIG_VIDEO_BT848
+./scripts/config --disable CONFIG_VIDEO_BWQCAM
+./scripts/config --disable CONFIG_VIDEO_CQCAM
+./scripts/config --disable CONFIG_VIDEO_HEXIUM_GEMINI
+./scripts/config --disable CONFIG_VIDEO_HEXIUM_ORION
+./scripts/config --disable CONFIG_VIDEO_MXB
+./scripts/config --disable CONFIG_VIDEO_SAA7146
+./scripts/config --disable CONFIG_VIDEO_ZORAN
+
 # Extreme Real-Time Tuning for Robotics Competition (Deterministic Execution)
 # 1. PCIe & Power Management: Highest Performance / No latency spikes
 ./scripts/config --enable CONFIG_PCIEASPM_PERFORMANCE
@@ -336,12 +472,30 @@ cp ../${TARGET}/.config .config
 # Resolve configuration differences automatically
 make olddefconfig > /dev/null
 
-# 5. Build Debian packages with modern x86-64-v3 (AVX2/FMA) optimization
-# DPKG_FLAGS="-d" ensures compatibility across all Linux distributions (Ubuntu, Debian, NixOS, Arch, etc.)
+# 5. Build Debian packages with modern x86-64-v3 (AVX2/FMA) optimization & ccache acceleration
+# Enable ccache if available
+if command -v ccache >/dev/null 2>&1; then
+    export PATH="/usr/lib/ccache:$PATH"
+    echo "ccache enabled for ultra-fast compilation."
+fi
+
+# Multi-threaded compression & skip documentation
+export ZSTD_NBTHREADS=0
+export XZ_OPT="-T0"
+export DEB_BUILD_OPTIONS="nodocs"
+export DEB_BUILD_PROFILES="nodocs"
+
+JOBS=$(( $(nproc) + 2 ))
+echo "Compiling with $JOBS parallel jobs..."
+
 KCFLAGS="-O3 -march=x86-64-v3 -mtune=generic" \
 KCPPFLAGS="-O3 -march=x86-64-v3 -mtune=generic" \
 HOSTCFLAGS="${HOSTCFLAGS}" \
 HOSTLDFLAGS="${HOSTLDFLAGS}" \
-make -j$(nproc) bindeb-pkg DPKG_FLAGS="-d"
+make -j${JOBS} bindeb-pkg DPKG_FLAGS="-d"
 
-echo "Build completed."
+# Ensure deb packages are readable by host runner and verify existence
+chmod -f a+rw ../*.deb || true
+ls -lh ../*.deb
+
+echo "Build completed successfully."
