@@ -4,11 +4,13 @@ on:
   push:
     tags:
       - 'v*'
-    workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     strategy:
       matrix:
         target: [x86-64-ubuntu2604]
