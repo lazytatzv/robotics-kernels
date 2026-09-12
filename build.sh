@@ -448,6 +448,40 @@ cp ../${TARGET}/.config .config
 ./scripts/config --disable CONFIG_PAGE_TABLE_ISOLATION
 ./scripts/config --disable CONFIG_RETPOLINE
 
+# 16. Archaic Network Protocols (Obscure ancient network layers)
+./scripts/config --disable CONFIG_ATALK
+./scripts/config --disable CONFIG_X25
+./scripts/config --disable CONFIG_LAPB
+./scripts/config --disable CONFIG_PHONET
+./scripts/config --disable CONFIG_CAIF
+./scripts/config --disable CONFIG_6LOWPAN
+./scripts/config --disable CONFIG_RDS
+./scripts/config --disable CONFIG_TIPC
+./scripts/config --disable CONFIG_AF_RXRPC
+./scripts/config --disable CONFIG_KCM
+./scripts/config --disable CONFIG_L2TP
+
+# Extreme Real-Time Tuning for Robotics Competition (Deterministic Execution)
+# 1. PCIe & Power Management: Highest Performance / No latency spikes
+./scripts/config --enable CONFIG_PCIEASPM_PERFORMANCE
+./scripts/config --disable CONFIG_PCIEASPM_POWERSAVE
+./scripts/config --disable CONFIG_PCIEASPM_POWER_SUPERSAVE
+
+# 2. Disable SWAP (Prevent deadly disk I/O stall & memory freeze during matches)
+./scripts/config --disable CONFIG_SWAP
+
+# 3. Threaded IRQs (Allow prioritizing control tasks over network/USB interrupts)
+./scripts/config --enable CONFIG_IRQ_FORCED_THREADING
+
+# 4. Remove watchdog & detector timer interrupts (Eliminate background NMI jitter)
+./scripts/config --disable CONFIG_LOCKUP_DETECTOR
+./scripts/config --disable CONFIG_HARDLOCKUP_DETECTOR
+./scripts/config --disable CONFIG_DETECT_HUNG_TASK
+
+# 5. Disable CPU Vulnerability Mitigations for Ultra-Fast Syscalls & Context Switches
+./scripts/config --disable CONFIG_PAGE_TABLE_ISOLATION
+./scripts/config --disable CONFIG_RETPOLINE
+
 # 6. Ultra-Fast Memory Allocation & Cache Optimization (HugePages, SLUB, Disable NUMA)
 ./scripts/config --enable CONFIG_TRANSPARENT_HUGEPAGE_ALWAYS
 ./scripts/config --disable CONFIG_SLAB_FREELIST_HARDENED
@@ -458,14 +492,25 @@ cp ../${TARGET}/.config .config
 ./scripts/config --disable CONFIG_SCHED_AUTOGROUP
 ./scripts/config --enable CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE
 
-# Remove heavy debug locks and overhead for production RT
+# Remove heavy debug info, locks and module signing for production RT
+./scripts/config --enable CONFIG_DEBUG_INFO_NONE
 ./scripts/config --disable CONFIG_DEBUG_INFO
+./scripts/config --disable CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT
+./scripts/config --disable CONFIG_DEBUG_INFO_DWARF4
+./scripts/config --disable CONFIG_DEBUG_INFO_DWARF5
 ./scripts/config --disable CONFIG_DEBUG_INFO_BTF
+./scripts/config --disable CONFIG_DEBUG_INFO_BTF_MODULES
 ./scripts/config --disable CONFIG_PROVE_LOCKING
 ./scripts/config --disable CONFIG_LOCKDEP
 ./scripts/config --disable CONFIG_DEBUG_ATOMIC_SLEEP
 ./scripts/config --disable CONFIG_PAGE_POISONING
 ./scripts/config --disable CONFIG_DEBUG_KMEMLEAK
+
+# Disable Module Signing (Fixes build failures without private signing keys)
+./scripts/config --disable CONFIG_MODULE_SIG
+./scripts/config --disable CONFIG_MODULE_SIG_ALL
+./scripts/config --disable CONFIG_MODULE_SIG_FORCE
+./scripts/config --set-str CONFIG_MODULE_SIG_KEY ""
 ./scripts/config --set-str CONFIG_SYSTEM_TRUSTED_KEYS ""
 ./scripts/config --set-str CONFIG_SYSTEM_REVOCATION_KEYS ""
 
@@ -492,7 +537,7 @@ KCFLAGS="-O3 -march=x86-64-v3 -mtune=generic" \
 KCPPFLAGS="-O3 -march=x86-64-v3 -mtune=generic" \
 HOSTCFLAGS="${HOSTCFLAGS}" \
 HOSTLDFLAGS="${HOSTLDFLAGS}" \
-make -j${JOBS} CC="ccache gcc" HOSTCC="ccache gcc" bindeb-pkg DPKG_FLAGS="-d"
+make -j${JOBS} CC="ccache gcc" HOSTCC="ccache gcc" INSTALL_MOD_STRIP=1 bindeb-pkg DPKG_FLAGS="-d"
 
 # Ensure deb packages and cache are accessible
 chmod -f a+rw ../*.deb || true
