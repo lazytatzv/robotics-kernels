@@ -13,64 +13,10 @@ KERNEL_VERSION="7.0.1"
 RT_MAJOR="7.0"
 RT_PATCH="patch-7.0.1-rt2.patch.xz"
 
-# Build environment variables (ensures mkdebian works without hostname command)
+# Build environment variables (ensures reproducibility)
 export KBUILD_BUILD_USER="robotics"
 export KBUILD_BUILD_HOST="robotics-builder"
 export KDEB_CHANGELOG_DIST="noble"
-export PATH="$PATH:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/bin:/bin"
-
-# Auto-detect header/library paths for NixOS and non-FHS distributions
-# Headers (elfutils / openssl)
-for p in /nix/store/*-elfutils-*/include /nix/store/*elfutils*/include /usr/include /usr/local/include; do
-    if [ -f "$p/gelf.h" ]; then
-        export NIX_CFLAGS_COMPILE="${NIX_CFLAGS_COMPILE:+$NIX_CFLAGS_COMPILE }-I$p"
-        export C_INCLUDE_PATH="${C_INCLUDE_PATH:+$C_INCLUDE_PATH:}$p"
-        export CPATH="${CPATH:+$CPATH:}$p"
-        export HOSTCFLAGS="${HOSTCFLAGS:+$HOSTCFLAGS }-I$p"
-        export HOST_EXTRACFLAGS="${HOST_EXTRACFLAGS:+$HOST_EXTRACFLAGS }-I$p"
-        break
-    fi
-done
-
-for p in /nix/store/*-openssl-*/include /nix/store/*openssl*/include; do
-    if [ -d "$p" ]; then
-        export NIX_CFLAGS_COMPILE="${NIX_CFLAGS_COMPILE:+$NIX_CFLAGS_COMPILE }-I$p"
-        export C_INCLUDE_PATH="${C_INCLUDE_PATH:+$C_INCLUDE_PATH:}$p"
-        export CPATH="${CPATH:+$CPATH:}$p"
-        export HOSTCFLAGS="${HOSTCFLAGS:+$HOSTCFLAGS }-I$p"
-        export HOST_EXTRACFLAGS="${HOST_EXTRACFLAGS:+$HOST_EXTRACFLAGS }-I$p"
-        break
-    fi
-done
-
-# Libraries (libelf / libssl / libcrypto)
-for p in /nix/store/*-elfutils-*/lib /nix/store/*elfutils*/lib /usr/lib /usr/lib64 /usr/local/lib; do
-    if [ -f "$p/libelf.so" ] || [ -f "$p/libelf.a" ]; then
-        export NIX_LDFLAGS="${NIX_LDFLAGS:+$NIX_LDFLAGS }-L$p -rpath $p"
-        export LIBRARY_PATH="${LIBRARY_PATH:+$LIBRARY_PATH:}$p"
-        export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}$p"
-        export HOSTLDFLAGS="${HOSTLDFLAGS:+$HOSTLDFLAGS }-L$p"
-        export HOST_EXTRALDFLAGS="${HOST_EXTRALDFLAGS:+$HOST_EXTRALDFLAGS }-L$p"
-        if [ -d "$p/pkgconfig" ]; then
-            export PKG_CONFIG_PATH="${PKG_CONFIG_PATH:+$PKG_CONFIG_PATH:}$p/pkgconfig"
-        fi
-        break
-    fi
-done
-
-for p in /nix/store/*-openssl-*/lib /nix/store/*openssl*/lib; do
-    if [ -f "$p/libssl.so" ] || [ -f "$p/libcrypto.so" ]; then
-        export NIX_LDFLAGS="${NIX_LDFLAGS:+$NIX_LDFLAGS }-L$p -rpath $p"
-        export LIBRARY_PATH="${LIBRARY_PATH:+$LIBRARY_PATH:}$p"
-        export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}$p"
-        export HOSTLDFLAGS="${HOSTLDFLAGS:+$HOSTLDFLAGS }-L$p"
-        export HOST_EXTRALDFLAGS="${HOST_EXTRALDFLAGS:+$HOST_EXTRALDFLAGS }-L$p"
-        if [ -d "$p/pkgconfig" ]; then
-            export PKG_CONFIG_PATH="${PKG_CONFIG_PATH:+$PKG_CONFIG_PATH:}$p/pkgconfig"
-        fi
-        break
-    fi
-done
 
 echo "Building target: $TARGET"
 echo "Kernel: $KERNEL_VERSION / RT Patch: $RT_PATCH"
