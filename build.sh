@@ -132,7 +132,7 @@ cp ../${TARGET}/.config .config
 ./scripts/config --disable CONFIG_APPLETALK
 ./scripts/config --disable CONFIG_AX25
 
-# 3. Unused / Legacy filesystems (keep ext4, vfat, overlayfs)
+# 3. Unused / Heavy server filesystems (keep ext4, vfat, overlayfs)
 ./scripts/config --disable CONFIG_BTRFS_FS
 ./scripts/config --disable CONFIG_XFS_FS
 ./scripts/config --disable CONFIG_JFS_FS
@@ -142,13 +142,154 @@ cp ../${TARGET}/.config .config
 ./scripts/config --disable CONFIG_NILFS2_FS
 ./scripts/config --disable CONFIG_UFS_FS
 ./scripts/config --disable CONFIG_MINIX_FS
+./scripts/config --disable CONFIG_F2FS_FS
+./scripts/config --disable CONFIG_OCFS2_FS
+./scripts/config --disable CONFIG_GFS2_FS
+./scripts/config --disable CONFIG_CEPH_FS
+./scripts/config --disable CONFIG_CIFS
+./scripts/config --disable CONFIG_SMB_SERVER
+./scripts/config --disable CONFIG_NFS_FS
+./scripts/config --disable CONFIG_NFSD
 
-# 4. Hypervisors & Sleep States (Bare-metal robotics target, avoid freeze/hibernation)
+# 4. Heavy enterprise server Ethernet & Infiniband (Keep Intel & Realtek)
+./scripts/config --disable CONFIG_INFINIBAND
+./scripts/config --disable CONFIG_NET_VENDOR_CISCO
+./scripts/config --disable CONFIG_NET_VENDOR_MELLANOX
+./scripts/config --disable CONFIG_NET_VENDOR_BROADCOM
+./scripts/config --disable CONFIG_NET_VENDOR_CHELSIO
+./scripts/config --disable CONFIG_NET_VENDOR_QLOGIC
+./scripts/config --disable CONFIG_NET_VENDOR_NETRONOME
+./scripts/config --disable CONFIG_NET_VENDOR_SOLARFLARE
+./scripts/config --disable CONFIG_NET_VENDOR_MARVELL
+./scripts/config --disable CONFIG_NET_VENDOR_CAVIUM
+./scripts/config --disable CONFIG_NET_VENDOR_ALACRITECH
+
+# 5. Unused GPUs & Display Drivers (Keep Intel i915/Xe, AMD amdgpu, and NVIDIA official; disable all VM, ARM, and legacy GPUs)
+# Unused / Obsolete PC GPUs
+./scripts/config --disable CONFIG_DRM_NOUVEAU
+./scripts/config --disable CONFIG_DRM_RADEON
+./scripts/config --disable CONFIG_DRM_AST
+./scripts/config --disable CONFIG_DRM_MGAG200
+./scripts/config --disable CONFIG_DRM_QXL
+./scripts/config --disable CONFIG_DRM_BOCHS
+./scripts/config --disable CONFIG_DRM_VIRTIO_GPU
+./scripts/config --disable CONFIG_DRM_ASPEED_GFX
+
+# Virtual Machine GPUs (VMware, VirtualBox, QEMU, Hyper-V, Xen)
+./scripts/config --disable CONFIG_DRM_VMWGFX
+./scripts/config --disable CONFIG_DRM_VBOXVIDEO
+./scripts/config --disable CONFIG_DRM_CIRRUS_QEMU
+./scripts/config --disable CONFIG_DRM_HYPERV
+./scripts/config --disable CONFIG_DRM_XEN
+
+# Non-x86 / ARM SoC GPUs (Raspberry Pi, Mali, Allwinner, MediaTek, etc.)
+./scripts/config --disable CONFIG_DRM_VC4
+./scripts/config --disable CONFIG_DRM_V3D
+./scripts/config --disable CONFIG_DRM_LIMA
+./scripts/config --disable CONFIG_DRM_PANFROST
+./scripts/config --disable CONFIG_DRM_PANTHOR
+./scripts/config --disable CONFIG_DRM_SUN4I
+./scripts/config --disable CONFIG_DRM_MESON
+./scripts/config --disable CONFIG_DRM_MEDIATEK
+./scripts/config --disable CONFIG_DRM_ETNAVIV
+./scripts/config --disable CONFIG_DRM_HISI
+./scripts/config --disable CONFIG_DRM_PL111
+./scripts/config --disable CONFIG_DRM_TIDSS
+
+# Ancient Intel Atom / Legacy GMA GPUs
+./scripts/config --disable CONFIG_DRM_GMA500
+./scripts/config --disable CONFIG_DRM_GMA3600
+./scripts/config --disable CONFIG_DRM_GMA600
+./scripts/config --disable CONFIG_DRM_I810
+
+# 6. Heavy server RAID controllers (Keep NVMe & SATA/AHCI)
+./scripts/config --disable CONFIG_SCSI_MEGARAID
+./scripts/config --disable CONFIG_SCSI_AACRAID
+./scripts/config --disable CONFIG_SCSI_QLOGIC_1280
+./scripts/config --disable CONFIG_SCSI_AIC7XXX
+./scripts/config --disable CONFIG_SCSI_MVSAS
+
+# 7. Hypervisors & Sleep States (Bare-metal robotics target, avoid freeze/hibernation)
 ./scripts/config --disable CONFIG_KVM
 ./scripts/config --disable CONFIG_KVM_INTEL
 ./scripts/config --disable CONFIG_KVM_AMD
 ./scripts/config --disable CONFIG_XEN
 ./scripts/config --disable CONFIG_HIBERNATION
+
+# 8. Archaic Media, Obscure NICs, 90s Joysticks & Legacy Laptop Drivers
+# Archaic storage & media (Floppy, CD-ROM, IDE, MemoryStick)
+./scripts/config --disable CONFIG_BLK_DEV_FD
+./scripts/config --disable CONFIG_CDROM
+./scripts/config --disable CONFIG_BLK_DEV_SR
+./scripts/config --disable CONFIG_IDE
+./scripts/config --disable CONFIG_PATA_LEGACY
+./scripts/config --disable CONFIG_MEMSTICK
+
+# Unused wireless / NFC / WiMAX
+./scripts/config --disable CONFIG_WIMAX
+./scripts/config --disable CONFIG_NFC
+
+# Archaic joysticks (Keep modern USB/BT gamepads: xpad, sony, hid)
+./scripts/config --disable CONFIG_JOYSTICK_IFORCE
+./scripts/config --disable CONFIG_JOYSTICK_WARRIOR
+./scripts/config --disable CONFIG_JOYSTICK_MAGELLAN
+./scripts/config --disable CONFIG_JOYSTICK_SPACEORB
+./scripts/config --disable CONFIG_JOYSTICK_SPACEBALL
+./scripts/config --disable CONFIG_JOYSTICK_STINGER
+./scripts/config --disable CONFIG_JOYSTICK_TWIDDLER
+./scripts/config --disable CONFIG_JOYSTICK_ZHENHUA
+./scripts/config --disable CONFIG_JOYSTICK_DB9
+./scripts/config --disable CONFIG_JOYSTICK_GAMECON
+./scripts/config --disable CONFIG_JOYSTICK_TURBOGRAFX
+
+# Archaic 90s-2000s GPUs (Voodoo, Matrox, S3, Riva, etc.)
+./scripts/config --disable CONFIG_FB_MATROX
+./scripts/config --disable CONFIG_FB_RIVA
+./scripts/config --disable CONFIG_FB_I740
+./scripts/config --disable CONFIG_FB_KYRO
+./scripts/config --disable CONFIG_FB_S3
+./scripts/config --disable CONFIG_FB_VOODOO1
+./scripts/config --disable CONFIG_FB_TRIDENT
+
+# Obscure NIC vendors (Keep Intel e1000/igb/ixgbe/ice and Realtek r8169)
+./scripts/config --disable CONFIG_NET_VENDOR_AQUANTIA
+./scripts/config --disable CONFIG_NET_VENDOR_AGERE
+./scripts/config --disable CONFIG_NET_VENDOR_ALTEON
+./scripts/config --disable CONFIG_NET_VENDOR_DEC
+./scripts/config --disable CONFIG_NET_VENDOR_DLINK
+./scripts/config --disable CONFIG_NET_VENDOR_EMULEX
+./scripts/config --disable CONFIG_NET_VENDOR_EZCHIP
+./scripts/config --disable CONFIG_NET_VENDOR_HUAWEI
+./scripts/config --disable CONFIG_NET_VENDOR_MYRICOM
+./scripts/config --disable CONFIG_NET_VENDOR_NATSEMI
+./scripts/config --disable CONFIG_NET_VENDOR_NVIDIA
+./scripts/config --disable CONFIG_NET_VENDOR_OKI
+./scripts/config --disable CONFIG_NET_VENDOR_PENSANDO
+./scripts/config --disable CONFIG_NET_VENDOR_QUALCOMM
+./scripts/config --disable CONFIG_NET_VENDOR_RDC
+./scripts/config --disable CONFIG_NET_VENDOR_RENESAS
+./scripts/config --disable CONFIG_NET_VENDOR_ROCKER
+./scripts/config --disable CONFIG_NET_VENDOR_SAMSUNG
+./scripts/config --disable CONFIG_NET_VENDOR_SEEQ
+./scripts/config --disable CONFIG_NET_VENDOR_SILAN
+./scripts/config --disable CONFIG_NET_VENDOR_SIS
+./scripts/config --disable CONFIG_NET_VENDOR_SMSC
+./scripts/config --disable CONFIG_NET_VENDOR_STMICRO
+./scripts/config --disable CONFIG_NET_VENDOR_SUN
+./scripts/config --disable CONFIG_NET_VENDOR_TEHUTI
+./scripts/config --disable CONFIG_NET_VENDOR_TI
+./scripts/config --disable CONFIG_NET_VENDOR_VIA
+./scripts/config --disable CONFIG_NET_VENDOR_WIZNET
+
+# Old laptop-specific vendor drivers (Fujitsu, Panasonic, Sony, Toshiba, etc.)
+./scripts/config --disable CONFIG_FUJITSU_LAPTOP
+./scripts/config --disable CONFIG_PANASONIC_LAPTOP
+./scripts/config --disable CONFIG_SONY_LAPTOP
+./scripts/config --disable CONFIG_TOPSTAR_LAPTOP
+./scripts/config --disable CONFIG_TOSHIBA_BT_RFKILL
+./scripts/config --disable CONFIG_TOSHIBA_HAPS
+./scripts/config --disable CONFIG_SAMSUNG_LAPTOP
+./scripts/config --disable CONFIG_ACER_WIRELESS
 
 # Extreme Real-Time Tuning for Robotics Competition (Deterministic Execution)
 # 1. PCIe & Power Management: Highest Performance / No latency spikes
